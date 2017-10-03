@@ -17,7 +17,7 @@ public class QuickSort {
     }
 
     public QuickSort(Double[] arrayToSort_Param, String fileName) {
-        this.arrayToSort = arrayToSort_Param;
+        arrayToSort = arrayToSort_Param;
 
         Long startTime = System.currentTimeMillis();
         doQuickSort(arrayToSort,0,arrayToSort.length - 1);
@@ -67,11 +67,13 @@ public class QuickSort {
             this.sortedArray = sortedArray;
             this.elapsedTime = elapsedTime;
             this.fileName = fileName;
+        }
 
-            System.out.println("Input File >:\t" + fileName);
-            System.out.println("Array Length >:\t" + sortedArray.length);
-            System.out.println("\nSorted Array is -\n" + Arrays.toString(sortedArray));
-            System.out.println("\nArray has been sorted in >:\t" + elapsedTime + " ms");
+        public void printSortingData(){
+            System.out.println("\nInput >:\t" + fileName);
+            System.out.println("\t\t\tInput Size >:\t" + sortedArray.length);
+            //System.out.println("\nSorted Array is -\n" + Arrays.toString(sortedArray));
+            System.out.println("\t\t\tInput has been sorted in >:\t" + elapsedTime + " ms\n\n");
         }
     }
 
