@@ -23,16 +23,18 @@ public class Qsort {
 
         for(String tempFile : fileNameToArrayMap.keySet()) {
             if(fileNameToArrayMap.containsKey(tempFile)) {
-                QuickSort qSort = new QuickSort(fileNameToArrayMap.get(tempFile), tempFile);
-                sortDataDetails.add(qSort.getSortData());
+                new Qsort().doQuickSortOnInput(fileNameToArrayMap.get(tempFile), tempFile);
             }
         }
 
         for(QuickSort.SortData tempSortData : sortDataDetails) {
             tempSortData.printSortingData();
         }
+    }
 
-        // getRandomNumbers();
+    private void doQuickSortOnInput(Double[] inputArray, String fileName){
+        Qsort.QuickSort qSort = new Qsort.QuickSort(inputArray, fileName);
+        qSort.getSortData().printSortingData();
     }
 
     private static Double[] getArrayFromFile(String fileName) {
@@ -66,6 +68,108 @@ public class Qsort {
         return arrayToSort;
     }
 
+
+
+    private static void writeToFile(Double[] arrayToWrite){
+        BufferedWriter buffWrite;
+
+        try {
+            // Implement logic to write the sorted array in a file.
+            File fileName = new File("input3.txt");
+
+            if(!fileName.exists()){
+                fileName.createNewFile();
+            }
+
+            FileWriter fWriter = new FileWriter(fileName);
+            buffWrite = new BufferedWriter(fWriter);
+            buffWrite.write(Arrays.toString(arrayToWrite).replace(',',';').replace('[',' ').replace(']',' '));
+            buffWrite.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+    // Inner Class to perform the Quick Sort Operations - Partition and Sort
+    private class QuickSort {
+
+        public SortData sd;
+        private Double[] arrayToSort;
+
+        public QuickSort() {
+            arrayToSort = null;
+        }
+
+        public QuickSort(Double[] arrayToSort_Param, String fileName) {
+            arrayToSort = arrayToSort_Param;
+
+            Long startTime = System.currentTimeMillis();
+            doQuickSort(arrayToSort,0,arrayToSort.length - 1);
+            Long elapsedTime = System.currentTimeMillis() - startTime;
+
+             sd = new SortData(arrayToSort, elapsedTime, fileName);
+        }
+
+        public void doQuickSort(Double[] array, int min, int max) {
+
+            if (min < max) {
+                int index = doPartition(array, min, max);
+
+                doQuickSort(array, min, index - 1);
+                doQuickSort(array, index + 1, max);
+            }
+        }
+
+        private int doPartition(Double[] tempArray, int min, int max ) {
+
+            Double pivot = tempArray[max];
+            int i = (min - 1);
+
+            for(int j = min; j <= max - 1; j++) {
+                if (tempArray[j] <= pivot) {
+                    i++;
+
+                    Double temp = tempArray[i];
+                    tempArray[i] = tempArray[j];
+                    tempArray[j] = temp;
+                }
+            }
+
+            Double temp2 = tempArray[i+1];
+            tempArray[i+1] = tempArray[max];
+            tempArray[max] = temp2;
+
+            return (i + 1);
+        }
+
+        private class SortData{
+            Double[] sortedArray;
+            Long elapsedTime;
+            String fileName;
+
+            public SortData(Double[] sortedArray, Long elapsedTime, String fileName) {
+                this.sortedArray = sortedArray;
+                this.elapsedTime = elapsedTime;
+                this.fileName = fileName;
+            }
+
+            public void printSortingData(){
+                System.out.println("\nInput >:\t" + fileName);
+                System.out.println("\t\t\tInput Size >:\t" + sortedArray.length);
+                //System.out.println("\nSorted Array is -\n" + Arrays.toString(sortedArray));
+                System.out.println("\t\t\tInput has been sorted in >:\t" + elapsedTime + " ms\n\n");
+            }
+        }
+
+        public SortData getSortData(){
+            return sd;
+        }
+    }
+
+
+
+    // UTILITY METHODS
     public static void getRandomNumbers() {
 
         ArrayList<Double> randomList = new ArrayList<Double>();
@@ -90,25 +194,5 @@ public class Qsort {
             }
         }
         return true;
-    }
-
-    private static void writeToFile(Double[] arrayToWrite){
-        BufferedWriter buffWrite;
-
-        try {
-            // Implement logic to write the sorted array in a file.
-            File fileName = new File("input3.txt");
-
-            if(!fileName.exists()){
-                fileName.createNewFile();
-            }
-
-            FileWriter fWriter = new FileWriter(fileName);
-            buffWrite = new BufferedWriter(fWriter);
-            buffWrite.write(Arrays.toString(arrayToWrite).replace(',',';').replace('[',' ').replace(']',' '));
-            buffWrite.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 }
